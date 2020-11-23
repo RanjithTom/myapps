@@ -1,4 +1,4 @@
-package com.test.myapps.model;
+package com.myutils.model;
 
 import lombok.Getter;
 import lombok.Setter;

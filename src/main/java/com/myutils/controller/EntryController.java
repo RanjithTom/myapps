@@ -1,7 +1,7 @@
-package com.test.myapps.controller;
+package com.myutils.controller;
 
-import com.test.myapps.model.UserDetails;
-import com.test.myapps.util.JwtTokenUtil;
+import com.myutils.model.UserDetails;
+import com.myutils.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,17 +11,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EntryController {
 
-  @Autowired
   private JwtTokenUtil jwtTokenUtil;
+
+  /**
+   * Constructor based injection
+   *
+   * @param jwtTokenUtil dependency injection.
+   */
+  @Autowired
+  public EntryController(JwtTokenUtil jwtTokenUtil) {
+    this.jwtTokenUtil = jwtTokenUtil;
+  }
 
   @PostMapping("/login")
   public String login(@RequestBody UserDetails userDetails) {
-    System.out.println(userDetails.getUserName());
     return jwtTokenUtil.generateToken(userDetails);
   }
 
   @PostMapping("/validate")
-  public Boolean hello(@RequestBody UserDetails userDetails, @RequestHeader(value = "token") String bearerToken) {
+  public Boolean validateToken(@RequestBody UserDetails userDetails,
+      @RequestHeader(value = "token") String bearerToken) {
     return jwtTokenUtil.validateToken(bearerToken, userDetails);
   }
 

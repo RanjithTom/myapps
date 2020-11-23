@@ -1,6 +1,6 @@
-package com.test.myapps.util;
+package com.myutils.util;
 
-import com.test.myapps.model.UserDetails;
+import com.myutils.model.UserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class JwtTokenUtil implements Serializable {
   private final String secret;
 
   @Autowired
-  public JwtTokenUtil(@Value("${jwt.key.value}") String  secret) {
+  public JwtTokenUtil(@Value("${jwt.key.value}") String secret) {
     this.secret = Base64.getEncoder()
         .encodeToString(secret.getBytes());
   }
@@ -49,42 +48,31 @@ public class JwtTokenUtil implements Serializable {
    */
 
   /**
-   * Method generate token with HS256 algorithm signed with secret key and with subject as username.
-   * @param userDetails
-   * @return
+   * Method generate token with HS256 algorithm signed with secret key and with subject as
+   * username.
    */
   public String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
-    System.out.println("Uswrdetailsss  :"+userDetails.getUserName());
     return Jwts.builder().setClaims(claims).setSubject(userDetails.getUserName()).setIssuedAt(
         new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(2))).signWith(SignatureAlgorithm.HS256,  secret).compact();
+        .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(2)))
+        .signWith(SignatureAlgorithm.HS256, secret).compact();
   }
 
   /**
-   * Checks the value from Token and username both are same token for the exact user.
-   * Also verifies the expiry also grater than current time
-   *
-   * @param token
-   * @param userDetails
-   * @return
+   * Checks the value from Token and username both are same token for the exact user. Also verifies
+   * the expiry also grater than current time
    */
   public Boolean validateToken(String token, UserDetails userDetails) {
     final String userNameFromToken = getClaimFromToken(token, Claims::getSubject);
-    System.out.println("Userame:::"+userNameFromToken);
     final Date getExpirationTimeFromToken = (Date) getClaimFromToken(token, Claims::getExpiration);
-    System.out.println("Time:::"+getExpirationTimeFromToken);
-    return userDetails.getUserName().equals(userNameFromToken) && getExpirationTimeFromToken.after(new Date());
+    return userDetails.getUserName().equals(userNameFromToken) && getExpirationTimeFromToken
+        .after(new Date());
   }
 
   /**
-   * Method to get values from token. Second argument is Function interface
-   * Function accepts the first argument(Claims) and apply then produces the result in second argument.
-   *
-   * @param token
-   * @param claimsTFunction
-   * @param <T>
-   * @return
+   * Method to get values from token. Second argument is Function interface Function accepts the
+   * first argument(Claims) and apply then produces the result in second argument.
    */
   private <T> T getClaimFromToken(String token, Function<Claims, T> claimsTFunction) {
     Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();

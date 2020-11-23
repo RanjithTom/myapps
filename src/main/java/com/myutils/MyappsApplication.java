@@ -1,4 +1,4 @@
-package com.test.myapps;
+package com.myutils;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MyappsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MyappsApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(MyappsApplication.class, args);
+  }
 
 }
